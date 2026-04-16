@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Level 1 – Task 2 | JavaScript Interactions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f0e8;
+      --card: #fffdf7;
+      --border: #e2ddd4;
+      --text: #1a1814;
+      --muted: #8a8070;
+      --accent: #d4380d;
+      --accent2: #0d5a8a;
+      --accent3: #2d7d46;
+      --heading: 'Syne', sans-serif;
+      --body: 'Space Grotesk', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--text);
+      color: var(--bg);
+      padding: 1.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-family: var(--heading); font-size: 1.4rem; }
+    .logo span { color: #d4380d; }
+    .badge {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      padding: .3rem .8rem;
+      border-radius: 4px;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .page-title {
+      font-family: var(--heading);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      margin-bottom: .5rem;
+    }
+    .page-subtitle {
+      color: var(--muted);
+      margin-bottom: 3.5rem;
+      font-size: 1rem;
+    }
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.1);
+    }
+    .card-num {
+      font-family: var(--heading);
+      font-size: 4rem;
+      font-weight: 800;
+      opacity: .06;
+      position: absolute;
+      top: 1rem; right: 1.5rem;
+      line-height: 1;
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-family: var(--heading);
+      font-size: 1.3rem;
+      margin-bottom: .4rem;
+    }
+    .card p {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+    .accent-bar {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+    }
+
+    /* ── TASK 1: COLOR BUTTON ── */
+    .color-btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .35s cubic-bezier(.34,1.56,.64,1);
+      letter-spacing: .02em;
+      position: relative;
+      overflow: hidden;
+    }
+    .color-btn::after {
+      content: attr(data-label);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .color-btn:hover { transform: scale(1.03); }
+    .color-btn:active { transform: scale(.97); }
+
+    /* ── TASK 2: GREETING ── */
+    .greeting-btn {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--text);
+      border-radius: 10px;
+      background: transparent;
+      font-family: var(--body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--text);
+    }
+    .greeting-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .greeting-display {
+      margin-top: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 4px solid var(--accent2);
+      font-size: .9rem;
+      color: var(--text);
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: all .3s;
+    }
+
+    /* ── TASK 3: CALCULATOR ── */
+    .calc-inputs {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .calc-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: .8rem 1rem;
+      font-family: var(--body);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+      width: 0;
+    }
+    .calc-input:focus { border-color: var(--accent3); }
+    .calc-op {
+      font-size: 1.5rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .ops-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .op-btn {
+      padding: .65rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      font-family: var(--body);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--text);
+    }
+    .op-btn:hover, .op-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .calc-btn {
+      width: 100%;
+      padding: .9rem;
+      background: var(--accent3);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .calc-btn:hover { opacity: .88; transform: translateY(-1px); }
+    .result-display {
+      margin-top: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg);
+      border-radius: 8px;
+      text-align: center;
+      font-family: var(--heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      min-height: 56px;
+      transition: all .3s;
+      color: var(--accent3);
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .pop { animation: pop .3s ease; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Cogni<span>fyz</span>.</div>
+  <span class="badge">Level 1 · Task 2</span>
+</header>
+
+<main>
+  <h1 class="page-title">JavaScript<br>Interactions</h1>
+  <p class="page-subtitle">Three interactive components built with vanilla JavaScript</p>
+
+  <div class="tasks-grid">
+
+    <!-- ── TASK A: COLOR CHANGING BUTTON ── -->
+    <div class="card">
+      <div class="accent-bar" style="background:linear-gradient(90deg,#d4380d,#fa8c16)"></div>
+      <div class="card-num">01</div>
+      <div class="card-icon">🎨</div>
+      <h3>Color Shift Button</h3>
+      <p>Click the button to watch it morph through a vivid palette with smooth transitions.</p>
+      <button class="color-btn" id="colorBtn" onclick="changeColor()" style="background:#d4380d;color:#fff;">
+        Click to Change Color
+      </button>
+    </div>
+
+    <!-- ── TASK B: TIME-BASED GREETING ── -->
+    <div class="card">
+      <div class="accent-bar" style="background:linear-gradient(90deg,#0d5a8a,#36cfc9)"></div>
+      <div class="card-num">02</div>
+      <div class="card-icon">🕐</div>
+      <h3>Time-Based Greeting</h3>
+      <p>Generates a contextual greeting based on your local time of day.</p>
+      <button class="greeting-btn" onclick="showGreeting()">Show Greeting</button>
+      <div class="greeting-display" id="greetingDisplay">
+        <span>👆 Press the button to greet you!</span>
+      </div>
+    </div>
+
+    <!-- ── TASK C: CALCULATOR ── -->
+    <div class="card">
+      <div class="accent-bar" style="background:linear-gradient(90deg,#2d7d46,#73d13d)"></div>
+      <div class="card-num">03</div>
+      <div class="card-icon">🧮</div>
+      <h3>Smart Calculator</h3>
+      <p>Perform arithmetic on two numbers using the operation buttons below.</p>
+      <div class="calc-inputs">
+        <input class="calc-input" type="number" id="num1" placeholder="0" />
+        <span class="calc-op" id="opDisplay">+</span>
+        <input class="calc-input" type="number" id="num2" placeholder="0" />
+      </div>
+      <div class="ops-row">
+        <button class="op-btn active" onclick="setOp('+',this)">+</button>
+        <button class="op-btn" onclick="setOp('-',this)">−</button>
+        <button class="op-btn" onclick="setOp('*',this)">×</button>
+        <button class="op-btn" onclick="setOp('/',this)">÷</button>
+      </div>
+      <button class="calc-btn" onclick="calculate()">=&nbsp;&nbsp;Calculate</button>
+      <div class="result-display" id="resultDisplay">—</div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  /* ── COLOR BUTTON ── */
+  const colors = [
+    { bg: '#d4380d', label: '🔴 Crimson' },
+    { bg: '#0d5a8a', label: '🔵 Ocean' },
+    { bg: '#2d7d46', label: '🟢 Forest' },
+    { bg: '#6c3891', label: '🟣 Violet' },
+    { bg: '#b37400', label: '🟡 Amber' },
+    { bg: '#0d6e6e', label: '🩵 Teal' },
+  ];
+  let colorIdx = 0;
+  function changeColor() {
+    colorIdx = (colorIdx + 1) % colors.length;
+    const btn = document.getElementById('colorBtn');
+    btn.style.background = colors[colorIdx].bg;
+    btn.textContent = colors[colorIdx].label;
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+  }
+
+  /* ── GREETING ── */
+  function showGreeting() {
+    const h = new Date().getHours();
+    let icon, greeting, note;
+    if (h >= 5 && h < 12)       { icon='🌅'; greeting='Good Morning!';   note=`Rise and shine — it's ${h}:00 AM.`; }
+    else if (h >= 12 && h < 17) { icon='☀️'; greeting='Good Afternoon!'; note=`Keep up the great work at ${h}:00!`; }
+    else if (h >= 17 && h < 21) { icon='🌇'; greeting='Good Evening!';   note=`Time to wind down at ${h}:00.`; }
+    else                         { icon='🌙'; greeting='Good Night!';     note=`Late night coding at ${h}:00 — impressive!`; }
+
+    const el = document.getElementById('greetingDisplay');
+    el.innerHTML = `<span style="font-size:1.3rem">${icon}</span> <strong>${greeting}</strong>&nbsp; ${note}`;
+    el.style.borderLeftColor = '#0d5a8a';
+  }
+
+  /* ── CALCULATOR ── */
+  let currentOp = '+';
+  function setOp(op, btn) {
+    currentOp = op;
+    document.getElementById('opDisplay').textContent =
+      op === '*' ? '×' : op === '/' ? '÷' : op;
+    document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function calculate() {
+    const a = parseFloat(document.getElementById('num1').value);
+    const b = parseFloat(document.getElementById('num2').value);
+    const rd = document.getElementById('resultDisplay');
+    if (isNaN(a) || isNaN(b)) { rd.textContent = '⚠ Enter numbers'; return; }
+    let result;
+    switch (currentOp) {
+      case '+': result = a + b; break;
+      case '-': result = a - b; break;
+      case '*': result = a * b; break;
+      case '/': result = b === 0 ? '∞ (÷ by 0)' : +(a / b).toFixed(6); break;
+    }
+    rd.textContent = result;
+    rd.classList.remove('pop');
+    void rd.offsetWidth;
+    rd.classList.add('pop');
+  }
+</script>
+</body>
+</html>
